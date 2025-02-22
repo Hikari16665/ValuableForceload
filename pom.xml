@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>me.eventually</groupId>
+    <artifactId>valuableforceload</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+
+
+    <name>valuableforceload</name>
+
+    <properties>
+        <java.version>21</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <build>
+        <defaultGoal>clean package</defaultGoal>
+        <plugins>
+            <plugin>
+                <groupId>com.github.wvengen</groupId>
+                <artifactId>proguard-maven-plugin</artifactId>
+                <version>2.6.1</version>
+                <configuration>
+                    <injar>${project.build.finalName}.jar</injar>
+                    <outjar>${project.build.finalName}.jar</outjar>
+                    <proguardInclude>${basedir}/proguard.cfg</proguardInclude>
+                    <libs>
+                        <lib>${java.home}/jmods/java.base.jmod</lib>
+                        <lib>${java.home}/jmods/java.logging.jmod</lib>
+                    </libs>
+                    <options>
+                        <option>-keep class me.eventually.valuableforceload.* { *; }</option>
+                        <option>-keep class me.eventually.valuableforceload.listener.PlayerListener { *; }</option>
+                        <option>-keep class me.eventually.valuableforceload.utils.inventory.MenuListener { *; }</option>
+                        <option>-keepattributes RuntimeVisibleAnnotations</option>
+                        <option>-keep class * extends java.lang.Enum { *; }</option>
+                        <option>-obfuscationdictionary symbols.txt</option>
+                        <option>-packageobfuscationdictionary symbols.txt</option>
+                        <option>-classobfuscationdictionary symbols_cls.txt</option>
+                        <option>-optimizations *</option>
+                        <option>-keepattributes Exceptions,Signature</option>
+                        <option>-dontusemixedcaseclassnames</option>
+                        <option>-useuniqueclassmembernames</option>
+                        <option>-repackageclasses 'oiiaioiiiai.iiliIliIilililiIli'</option>
+                        <option>-flattenpackagehierarchy 'oiiaioiiiai.iiliIliIilililiIli'</option>
+                        <option>-renamesourcefileattribute ''</option>
+                    </options>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>proguard</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>proguard</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.5.3</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <minimizeJar>true</minimizeJar>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <relocations>
+                        <relocation>
+                            <pattern>org.bstats</pattern>
+                            <shadedPattern>me.eventually.valuableforceload.bstats</shadedPattern>
+                        </relocation>
+                    </relocations>
+                </configuration>
+            </plugin>
+        </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>spigotmc-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+        <repository>
+            <id>papermc</id>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
+        </repository>
+        <repository>
+            <id>sonatype</id>
+            <url>https://oss.sonatype.org/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+        <repository>
+            <id>rosewood-repo</id>
+            <url>https://repo.rosewooddev.io/repository/public/</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>1.21.1-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.bstats</groupId>
+            <artifactId>bstats-bukkit</artifactId>
+            <version>3.0.2</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.MilkBowl</groupId>
+            <artifactId>VaultAPI</artifactId>
+            <version>1.7</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.black_ixx</groupId>
+            <artifactId>playerpoints</artifactId>
+            <version>3.2.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.YiC200333</groupId>
+            <artifactId>XConomyAPI</artifactId>
+            <version>2.25.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.17.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>26.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.14.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-text-serializer-ansi</artifactId>
+            <version>4.19.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-text-minimessage</artifactId>
+            <version>4.19.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-text-serializer-legacy</artifactId>
+            <version>4.19.0</version>
+        </dependency>
+    </dependencies>
+</project>
