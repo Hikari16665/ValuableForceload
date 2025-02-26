@@ -112,7 +112,9 @@ public class ForceloadChunkManager {
         }
         List<ForceloadChunkData> list = new ArrayList<>();
         for (ForceloadChunk chunk : forceloadChunks) {
-            if (!(chunk.getOwnerPlayer().getUniqueId() == player.getUniqueId())) continue;
+            Player owner = chunk.getOwnerPlayer();
+            if (owner == null) continue;
+            if (!(owner.getUniqueId() == player.getUniqueId())) continue;
             list.add(new ForceloadChunkData(chunk));
         }
         return list;

@@ -90,10 +90,8 @@ public final class ValuableForceload extends JavaPlugin {
             public void run() {
                 ForceloadChunkManager.updateChunkForceloadStatus();
                 ForceloadChunkManager.cleanUpExpiredForceloads();
-                getLogger().info("Forceload chunk status updated.");
-                getLogger().info(ForceloadChunkManager.getForceloadChunks().toString());
             }
-        }.runTaskTimer(this, 0L, 30 * 20L);
+        }.runTaskTimer(this, 0L, 300 * 20L);
 
 
         // Economy plugin setup

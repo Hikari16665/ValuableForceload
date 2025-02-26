@@ -49,7 +49,6 @@ public class I18nUtil {
     public static String get(String key, Object... args) {
         Map<String, String> messages = cache.get(currentLocale.getLocaleName());
         String template = messages.getOrDefault(key, "["+key+"]");
-
         String formattedTemplate = template.replaceAll("\\{(\\d+)}","%s");
         return String.format(formattedTemplate, args);
     }
