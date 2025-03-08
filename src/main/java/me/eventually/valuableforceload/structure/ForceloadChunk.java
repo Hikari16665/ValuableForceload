@@ -35,7 +35,6 @@ public class ForceloadChunk {
         this.chunk = chunk;
         this.expireTimestamp = System.currentTimeMillis() / 1000L + expireTimeSeconds;
         this.uniqueId = UUID.randomUUID().toString();
-        ValuableForceload.getInstance().getLogger().info("Created new forceload chunk: " + this);
     }
     public ForceloadChunk(String ownerUuid, Price price, long expireTimestamp, Chunk chunk, String uniqueId){
         this.ownerUuid = ownerUuid;

@@ -25,7 +25,10 @@ import java.util.List;
 import java.util.Map;
 
 public class ManageGUI extends AbstractGUI {
-    private final ItemStack BACKGROUND = ItemStackUtil.getItemStack(Material.PINK_STAINED_GLASS_PANE, 1, " ", " ");
+
+    public static Material BACKGROUND_MATERIAL = Material.PINK_STAINED_GLASS_PANE;
+
+    private final ItemStack BACKGROUND = ItemStackUtil.getItemStack(BACKGROUND_MATERIAL, 1, " ", " ");
     private ItemStack PLAYER_PROFILE = ItemStackUtil.getItemStack(Material.ACACIA_SIGN, 1, I18nUtil.get("player-profile", ""), " ");
     private final ItemStack BACK = ItemStackUtil.getItemStack(Material.OAK_DOOR, 1, I18nUtil.get("back"), I18nUtil.get("click-quit"));
     private final ItemStack NEXT_PAGE = ItemStackUtil.getItemStack(Material.ARROW, 1, I18nUtil.get("next-page"), "");
@@ -54,7 +57,10 @@ public class ManageGUI extends AbstractGUI {
     private static Menu menu;
     private int page = 1;
     @Override
-    public void open(Player player) {
+    public void open(Player player){
+        open(player, true);
+    }
+    public void open(Player player, boolean message) {
         ItemStackUtil.rename(PLAYER_PROFILE, I18nUtil.get("player-profile", player.getName()));
         ItemStackUtil.setLore(PLAYER_PROFILE,
                 I18nUtil.get("forceload-chunks",
@@ -62,7 +68,9 @@ public class ManageGUI extends AbstractGUI {
                         PlayerChunkLimitManager.getPlayerChunkLimit(player)));
         List<ForceloadChunkData> chunks = ForceloadChunkManager.getForceloadChunkData(player);
         if (chunks.isEmpty()){
-            MessageUtil.sendMessage(player, I18nUtil.get("no-forceload-chunks"));
+            if (message) {
+                MessageUtil.sendMessage(player, I18nUtil.get("no-forceload-chunks"));
+            }
             return;
         }
         build();
@@ -120,7 +128,7 @@ public class ManageGUI extends AbstractGUI {
     }
     public void refresh(Player player) {
         player.closeInventory();
-        open(player);
+        open(player, false);
     }
 
     @Override

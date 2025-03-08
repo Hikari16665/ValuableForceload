@@ -4,6 +4,8 @@ import me.eventually.valuableforceload.commands.MainCommand;
 import me.eventually.valuableforceload.economy.EconomyPlayerPoints;
 import me.eventually.valuableforceload.economy.EconomyVault;
 import me.eventually.valuableforceload.economy.EconomyXConomy;
+import me.eventually.valuableforceload.gui.MainGUI;
+import me.eventually.valuableforceload.gui.ManageGUI;
 import me.eventually.valuableforceload.listener.PlayerListener;
 import me.eventually.valuableforceload.manager.EconomyManager;
 import me.eventually.valuableforceload.manager.ForceloadChunkManager;
@@ -15,6 +17,7 @@ import me.eventually.valuableforceload.utils.I18nUtil;
 import me.eventually.valuableforceload.utils.inventory.Menu;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SingleLineChart;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -33,6 +36,7 @@ public final class ValuableForceload extends JavaPlugin {
     // Config
     private FileConfiguration config;
     private final File configFile = new File(getDataFolder(), "config.yml");
+    private boolean hotreload = false;
 
     // Plugin
     public static ValuableForceload getInstance() {
@@ -156,35 +160,57 @@ public final class ValuableForceload extends JavaPlugin {
             }
         }
         if (!configFile.exists()) {
-            saveResource("config.yml", true);
+            try {
+                configFile.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
         if (!getDataFolder().toPath().resolve("lang").toFile().exists()) {
             getDataFolder().toPath().resolve("lang").toFile().mkdirs();
         }
         for (Locale locale : Locale.values()) {
-            saveResource("lang/messages_" + locale.getLocaleName() + ".json", true);
+            if (!getDataFolder().toPath().resolve("lang/messages_" + locale.getLocaleName() + ".json").toFile().exists()) {
+                saveResource("lang/messages_" + locale.getLocaleName() + ".json", false);
+            }
         }
-
         config = getConfig();
-
         // Default configs
         config.addDefault("locale", "en");
         config.addDefault("max-forceload-chunks-per-player", 3);
+        config.addDefault("menu-item.main-background", "BLACK_STAINED_GLASS_PANE");
+        config.addDefault("menu-item.manage-background", "PINK_STAINED_GLASS_PANE");
+        config.addDefault("menu-item.buy", "BEACON");
+        config.addDefault("menu-item.manage", "COMPASS");
         config.addDefault("forceload-chunk-price.economy-type", "PLUGIN_PLAYERPOINTS");
         config.addDefault("forceload-chunk-price.value", 200);
         config.addDefault("forceload-chunk-price.days", 3);
         config.addDefault("forceload-chunk-data", List.of());
+        ForceloadChunkManager.parseAllChunks((List<Map<String, Object>>) config.getList("forceload-chunk-data"));
+        loadBasicConfig();
+        saveConfig();
 
+
+
+        hotreload = true;
+
+    }
+
+    public void loadBasicConfig(){
+        if (hotreload){
+            reloadConfig();
+            config = getConfig();
+        }
         // Configs setup
         PlayerChunkLimitManager.setDefaultLimit(config.getInt("max-forceload-chunks-per-player"));
         EconomyManager.setPriceType(PriceType.valueOf(config.getString("forceload-chunk-price.economy-type")));
         EconomyManager.setPrice(config.getInt("forceload-chunk-price.value"));
         EconomyManager.setBuyTimeOnce(config.getInt("forceload-chunk-price.days"));
         I18nUtil.setLocale(Locale.valueOf(config.getString("locale")));
-        ForceloadChunkManager.parseAllChunks((List<Map<String, Object>>) config.getList("forceload-chunk-data"));
-        saveConfig();
-
-
+        MainGUI.BACKGROUND_MATERIAL = Material.valueOf(config.getString("menu-item.main-background"));
+        MainGUI.BUY_MATERIAL = Material.valueOf(config.getString("menu-item.buy"));
+        MainGUI.LOOK_MATERIAL = Material.valueOf(config.getString("menu-item.manage"));
+        ManageGUI.BACKGROUND_MATERIAL = Material.valueOf(config.getString("menu-item.manage-background"));
         // Forceload chunk price~
         price = EconomyManager.createPrice();
     }
@@ -197,6 +223,11 @@ public final class ValuableForceload extends JavaPlugin {
         config.set("forceload-chunk-price.days", EconomyManager.getBuyTimeOnce());
         config.set("locale", I18nUtil.getLocale());
         config.set("forceload-chunk-data", ForceloadChunkManager.mapAllChunks());
+        config.set("menu-item.main-background", MainGUI.BACKGROUND_MATERIAL.name());
+        config.set("menu-item.manage-background", ManageGUI.BACKGROUND_MATERIAL.name());
+        config.set("menu-item.buy", MainGUI.BUY_MATERIAL.name());
+        config.set("menu-item.manage", MainGUI.LOOK_MATERIAL.name());
+
         try {
             config.save(configFile);
         } catch (IOException e) {

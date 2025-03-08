@@ -3,6 +3,8 @@ package me.eventually.valuableforceload.commands;
 import me.eventually.valuableforceload.ValuableForceload;
 import me.eventually.valuableforceload.commands.sub.AdminSubCommand;
 import me.eventually.valuableforceload.gui.MainGUI;
+import me.eventually.valuableforceload.manager.EconomyManager;
+import me.eventually.valuableforceload.utils.I18nUtil;
 import me.eventually.valuableforceload.utils.PlayerUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -28,11 +30,21 @@ public class MainCommand implements TabExecutor {
                     return true;
                 } else {
                     sender.sendMessage("You do not have permission to use this command.");
+                    return true;
                 }
-                break;
             case "version":
                 sender.sendMessage("ValuableForceload version " + ValuableForceload.getInstance().getDescription().getVersion());
                 return true;
+            case "reload":
+                if (sender.hasPermission("valuableforceload.command.reload")) {
+                    ValuableForceload.getInstance().loadBasicConfig();
+                    sender.sendMessage(I18nUtil.get("config-reloaded"));
+                    sender.sendMessage(I18nUtil.get("price", EconomyManager.getPriceType().getDisplayName(), EconomyManager.getPrice(), EconomyManager.getBuyTimeOnce()));
+                    return true;
+                } else {
+                    sender.sendMessage("You do not have permission to use this command.");
+                    return true;
+                }
             case "admin":
                 if (args.length < 2) return false;
                 return AdminSubCommand.onCommand(sender, command, label, Arrays.copyOfRange(args, 1, args.length));
@@ -44,7 +56,7 @@ public class MainCommand implements TabExecutor {
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         switch (args.length){
             case 0, 1 -> {
-                return List.of("open", "version", "admin");
+                return List.of("open", "version", "admin", "reload");
             }
             case 2 -> {
                 if (args[0].equals("admin")) {
@@ -52,8 +64,6 @@ public class MainCommand implements TabExecutor {
                 }
             }
         }
-
         return List.of();
-}
-
+    }
 }

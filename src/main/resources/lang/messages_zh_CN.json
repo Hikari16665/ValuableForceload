@@ -38,5 +38,6 @@
   "next-page": "&6&l下一页",
   "last-page": "&6&l上一页",
   "author-list": "&e&l开发者：",
-  "author": "&eEventually"
+  "author": "&eEventually",
+  "config-reloaded": "配置文件已重载！"
 }

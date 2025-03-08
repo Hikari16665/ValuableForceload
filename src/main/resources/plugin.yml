@@ -1,7 +1,7 @@
 name: ValuableForceload
-version: '1.0.1'
+version: '1.0.3f1'
 main: me.eventually.valuableforceload.ValuableForceload
-api-version: '1.21'
+api-version: '1.13'
 load: POSTWORLD
 authors: [ Eventually ]
 description: A plugin that allows players to buy force-load chunks for certain times.
@@ -17,4 +17,4 @@ commands:
       - vfl
       - vforceload
     permission-message: "You do not have permission to use this command."
-    usage: "/valuableforceload <open|version|admin>"
+    usage: "/valuableforceload <open|version|admin|reload>"

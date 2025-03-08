@@ -6,13 +6,12 @@ import me.eventually.valuableforceload.exceptions.NotSupportedCurrentException;
 import me.yic.xconomy.api.XConomyAPI;
 import net.milkbowl.vault.economy.Economy;
 import org.black_ixx.playerpoints.PlayerPointsAPI;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.math.BigDecimal;
 import java.util.Map;
 
-public class Price {
+public class  Price {
     private int price;
     private PriceType type;
 
@@ -67,7 +66,7 @@ public class Price {
         }catch (NotSetupException | NoClassDefFoundError e) {
             throw new NotSetupException(e);
         }catch (ArithmeticException wtf) {
-            // xconomy api will throw ArithmeticException when the balance cannot cast long type, and we cannot handle it currently.
+            // XConomy api will throw ArithmeticException when the balance cannot cast long type, and we cannot handle it currently.
             throw new NotSupportedCurrentException(wtf);
         }
     }
@@ -78,7 +77,6 @@ public class Price {
      * @throws NotSetupException if the economy type is not setup.
      */
     public void pay(Player player) throws NotSetupException {
-        Bukkit.getLogger().info(this.getType().toString());
         try {
             switch (type){
                 case PLUGIN_VAULT:

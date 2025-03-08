@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class PlayerChunkLimitManager {
-    public static int DEFAULT_LIMIT;
+    public static int DEFAULT_LIMIT = 3;
     public static void setDefaultLimit(int defaultLimit) {
         DEFAULT_LIMIT = defaultLimit;
     }

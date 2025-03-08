@@ -1,6 +1,7 @@
 package me.eventually.valuableforceload.gui;
 
 import me.eventually.valuableforceload.HotHandlers;
+import me.eventually.valuableforceload.ValuableForceload;
 import me.eventually.valuableforceload.exceptions.NotSetupException;
 import me.eventually.valuableforceload.exceptions.NotSupportedCurrentException;
 import me.eventually.valuableforceload.manager.EconomyManager;
@@ -23,11 +24,16 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class MainGUI extends AbstractGUI {
-    private final ItemStack BACKGROUND = ItemStackUtil.getItemStack(Material.BLACK_STAINED_GLASS_PANE, 1, " ", " ");
+
+    public static Material BACKGROUND_MATERIAL = Material.BLACK_STAINED_GLASS_PANE;
+    public static Material BUY_MATERIAL = Material.BEACON;
+    public static Material LOOK_MATERIAL = Material.COMPASS;
+
+    private final ItemStack BACKGROUND = ItemStackUtil.getItemStack(BACKGROUND_MATERIAL, 1, " ", " ");
     private ItemStack PLAYER_PROFILE = ItemStackUtil.getItemStack(Material.ACACIA_SIGN, 1, I18nUtil.get("player-profile", ""), " ");
     private final ItemStack QUIT = ItemStackUtil.getItemStack(Material.ARROW, 1, I18nUtil.get("quit"), I18nUtil.get("click-quit"));
-    private final ItemStack BUY = ItemStackUtil.getItemStack(Material.BEACON, 1, I18nUtil.get("buy"), I18nUtil.get("click-buy"));
-    private final ItemStack LOOK = ItemStackUtil.getItemStack(Material.COMPASS, 1, I18nUtil.get("look"), I18nUtil.get("click-look"));
+    private final ItemStack BUY = ItemStackUtil.getItemStack(BUY_MATERIAL, 1, I18nUtil.get("buy"), I18nUtil.get("click-buy"));
+    private final ItemStack LOOK = ItemStackUtil.getItemStack(LOOK_MATERIAL, 1, I18nUtil.get("look"), I18nUtil.get("click-look"));
     private final ItemStack AUTHOR = ItemStackUtil.getItemStack(Material.BOOK, 1, I18nUtil.get("author-list"), I18nUtil.get("author"));
     private final MatrixDrawer drawer = new MatrixDrawer(45)
             .addLine("AOOOFOOOO")
@@ -97,6 +103,12 @@ public class MainGUI extends AbstractGUI {
                         ));
                         PlayerChunkLimitManager.addPlayerChunk(player);
                         MessageUtil.sendMessage(player, I18nUtil.get("buy-successful"));
+                        ValuableForceload.getInstance().getLogger().info("Player %s created new forceload chunk %s".formatted(player.getName(), I18nUtil.get(
+                                "chunk",
+                                chunk.getWorld(),
+                                chunk.getX(),
+                                chunk.getZ()
+                        )));
                         this.refresh(player);
                     }else{
                         MessageUtil.sendMessage(player, I18nUtil.get("cannot-buy-already-forceloaded"));

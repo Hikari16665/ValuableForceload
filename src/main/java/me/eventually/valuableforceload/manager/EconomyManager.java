@@ -4,9 +4,9 @@ import me.eventually.valuableforceload.structure.Price;
 import me.eventually.valuableforceload.structure.PriceType;
 
 public class EconomyManager {
-    private static PriceType priceType;
-    private static int price;
-    private static int buyTimeOnce;
+    private static PriceType priceType = PriceType.MINECRAFT_EXP_LEVEL;
+    private static int price = 0;
+    private static int buyTimeOnce = 0;
 
     public static PriceType getPriceType() {
         return priceType;
