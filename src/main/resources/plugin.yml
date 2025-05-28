@@ -1,9 +1,10 @@
 name: ValuableForceload
-version: '1.0.3f1'
+version: '1.0.4f3'
 main: me.eventually.valuableforceload.ValuableForceload
 api-version: '1.13'
 load: POSTWORLD
 authors: [ Eventually ]
+folia-supported: true
 description: A plugin that allows players to buy force-load chunks for certain times.
 softdepend:
   - Vault

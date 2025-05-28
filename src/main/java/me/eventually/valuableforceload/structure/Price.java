@@ -2,7 +2,6 @@ package me.eventually.valuableforceload.structure;
 
 import me.eventually.valuableforceload.ValuableForceload;
 import me.eventually.valuableforceload.exceptions.NotSetupException;
-import me.eventually.valuableforceload.exceptions.NotSupportedCurrentException;
 import me.yic.xconomy.api.XConomyAPI;
 import net.milkbowl.vault.economy.Economy;
 import org.black_ixx.playerpoints.PlayerPointsAPI;
@@ -46,7 +45,7 @@ public class  Price {
      * @return true if the player has enough money to pay for the forceload, false otherwise.
      * @throws NotSetupException if the economy type is not setup.
      */
-    public Boolean checkEnough(Player player) throws NotSetupException{
+    public Boolean checkEnough(Player player) throws NotSetupException {
         try {
             switch (type){
                 case PLUGIN_VAULT:
@@ -59,15 +58,16 @@ public class  Price {
                     return ppApi.look(player.getUniqueId()) >= price;
                 case PLUGIN_XCONOMY:
                     XConomyAPI xconomyApi = ValuableForceload.getEconomyXConomy().getApi();
-                    return xconomyApi.getPlayerData(player.getUniqueId()).getBalance().longValueExact() >= price;
+//                    return xconomyApi.getPlayerData(player.getUniqueId()).getBalance().longValueExact() >= price;
+                    BigDecimal _price = new BigDecimal(price);
+                    return xconomyApi.getPlayerData(player.getUniqueId()).getBalance().compareTo(_price) >= 0;
+                case FREE:
+                    return true;
                 default:
                     throw new NotSetupException("Economy type is not setup.");
             }
         }catch (NotSetupException | NoClassDefFoundError e) {
             throw new NotSetupException(e);
-        }catch (ArithmeticException wtf) {
-            // XConomy api will throw ArithmeticException when the balance cannot cast long type, and we cannot handle it currently.
-            throw new NotSupportedCurrentException(wtf);
         }
     }
     /**
@@ -93,6 +93,8 @@ public class  Price {
                 case PLUGIN_XCONOMY:
                     XConomyAPI xconomyApi = ValuableForceload.getEconomyXConomy().getApi();
                     xconomyApi.changePlayerBalance(player.getUniqueId(), player.getName(), BigDecimal.valueOf(price), false);
+                    return;
+                case FREE:
                     return;
                 default:
                     throw new NotSetupException("Economy type is not setup.");

@@ -7,6 +7,8 @@ public class PlayerUtil {
     public static void runIfPlayer(CommandSender sender, Runnable runnable){
         if (sender instanceof Player) {
             runnable.run();
+        }else{
+            sender.sendMessage("You must be a player to use this command.");
         }
     }
 }

@@ -103,7 +103,6 @@ public class ForceloadChunk {
         String ownerUuid = (String) map.get("ownerUuid");
         UUID parsedOwnerUuid = java.util.UUID.fromString(ownerUuid);
         OfflinePlayer player = Bukkit.getServer().getOfflinePlayer(parsedOwnerUuid);
-        Bukkit.getLogger().info("Parsed ownerUuid: " + ownerUuid + "To Player " + player);
         if (player != null) {
             PlayerChunkLimitManager.initPlayerChunkLimit(player);
             PlayerChunkLimitManager.addPlayerChunk(player);

@@ -1,6 +1,6 @@
 package me.eventually.valuableforceload.structure;
 
-public class ForceloadChunkData {
+public class ForceloadChunkData{
     private final String uniqueId;
     private final String x;
     private final String z;

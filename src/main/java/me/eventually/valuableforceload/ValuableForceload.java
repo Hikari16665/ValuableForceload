@@ -24,12 +24,15 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 
-@SuppressWarnings({"unused", ""})
+@SuppressWarnings("unused")
 public final class ValuableForceload extends JavaPlugin {
     private static ValuableForceload instance;
 
@@ -152,6 +155,7 @@ public final class ValuableForceload extends JavaPlugin {
     }
 
     public void loadConfig() {
+        // create data folder
         if (!getDataFolder().exists()) {
             boolean created = getDataFolder().mkdir();
             if (!created) {
@@ -159,6 +163,7 @@ public final class ValuableForceload extends JavaPlugin {
                 manualDisable();
             }
         }
+        // create config file
         if (!configFile.exists()) {
             try {
                 configFile.createNewFile();
@@ -166,10 +171,22 @@ public final class ValuableForceload extends JavaPlugin {
                 throw new RuntimeException(e);
             }
         }
+        // create lang folder
         if (!getDataFolder().toPath().resolve("lang").toFile().exists()) {
             getDataFolder().toPath().resolve("lang").toFile().mkdirs();
         }
+        if (!getDataFolder().toPath().resolve("lang/temp").toFile().exists()){
+            getDataFolder().toPath().resolve("lang/temp").toFile().mkdirs();
+        }
         for (Locale locale : Locale.values()) {
+            InputStream is = getResource("lang/messages_" + locale.getLocaleName() + ".json");
+            //write is as file to folder temp
+            try {
+                Files.copy(is, getDataFolder().toPath().resolve("lang/temp/messages_" + locale.getLocaleName() + ".json"), StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                e.printStackTrace();
+                manualDisable();
+            }
             if (!getDataFolder().toPath().resolve("lang/messages_" + locale.getLocaleName() + ".json").toFile().exists()) {
                 saveResource("lang/messages_" + locale.getLocaleName() + ".json", false);
             }
@@ -186,12 +203,21 @@ public final class ValuableForceload extends JavaPlugin {
         config.addDefault("forceload-chunk-price.value", 200);
         config.addDefault("forceload-chunk-price.days", 3);
         config.addDefault("forceload-chunk-data", List.of());
-        ForceloadChunkManager.parseAllChunks((List<Map<String, Object>>) config.getList("forceload-chunk-data"));
+        config.addDefault("max-forceload-chunks-permission-override", List.of(
+                Map.of(
+                        "permission", "valuableforceload.example.permission-override",
+                        "limit", 4
+                ),
+                Map.of(
+                        "permission", "valuableforceload.example.permission-override-2",
+                        "limit", 5
+                )
+        ));
         loadBasicConfig();
+
+        ForceloadChunkManager.parseAllChunks((List<Map<String, Object>>) config.getList("forceload-chunk-data"));
+
         saveConfig();
-
-
-
         hotreload = true;
 
     }
@@ -203,10 +229,12 @@ public final class ValuableForceload extends JavaPlugin {
         }
         // Configs setup
         PlayerChunkLimitManager.setDefaultLimit(config.getInt("max-forceload-chunks-per-player"));
+        PlayerChunkLimitManager.parsePermissionOverrides((List<Map<String, Object>>) config.get("max-forceload-chunks-permission-override"));
         EconomyManager.setPriceType(PriceType.valueOf(config.getString("forceload-chunk-price.economy-type")));
         EconomyManager.setPrice(config.getInt("forceload-chunk-price.value"));
         EconomyManager.setBuyTimeOnce(config.getInt("forceload-chunk-price.days"));
         I18nUtil.setLocale(Locale.valueOf(config.getString("locale")));
+        I18nUtil.loadLocale(I18nUtil.getCurrentLocale());
         MainGUI.BACKGROUND_MATERIAL = Material.valueOf(config.getString("menu-item.main-background"));
         MainGUI.BUY_MATERIAL = Material.valueOf(config.getString("menu-item.buy"));
         MainGUI.LOOK_MATERIAL = Material.valueOf(config.getString("menu-item.manage"));
@@ -223,6 +251,7 @@ public final class ValuableForceload extends JavaPlugin {
         config.set("forceload-chunk-price.days", EconomyManager.getBuyTimeOnce());
         config.set("locale", I18nUtil.getLocale());
         config.set("forceload-chunk-data", ForceloadChunkManager.mapAllChunks());
+        config.set("max-forceload-chunks-permission-override", PlayerChunkLimitManager.mapPermissionOverrides());
         config.set("menu-item.main-background", MainGUI.BACKGROUND_MATERIAL.name());
         config.set("menu-item.manage-background", ManageGUI.BACKGROUND_MATERIAL.name());
         config.set("menu-item.buy", MainGUI.BUY_MATERIAL.name());
@@ -240,7 +269,6 @@ public final class ValuableForceload extends JavaPlugin {
 
     public void manualDisable() {
         getLogger().severe("Disabling ValuableForceload (IF YOU SEE THIS, PLEASE CHECK THE ERRORS ABOVE)");
-        saveConfig();
         getServer().getPluginManager().disablePlugin(this);
     }
 

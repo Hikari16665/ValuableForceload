@@ -9,6 +9,7 @@ import me.eventually.valuableforceload.manager.ForceloadChunkManager;
 import me.eventually.valuableforceload.manager.PlayerChunkLimitManager;
 import me.eventually.valuableforceload.structure.ForceloadChunk;
 import me.eventually.valuableforceload.structure.Price;
+import me.eventually.valuableforceload.structure.PriceType;
 import me.eventually.valuableforceload.utils.I18nUtil;
 import me.eventually.valuableforceload.utils.ItemStackUtil;
 import me.eventually.valuableforceload.utils.LocationUtil;
@@ -22,6 +23,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class MainGUI extends AbstractGUI {
 
@@ -58,21 +60,25 @@ public class MainGUI extends AbstractGUI {
     private static Menu menu;
 
     @Override
-    public void open(Player player) {
+    public void open(@NotNull Player player) {
         ItemStackUtil.rename(PLAYER_PROFILE, I18nUtil.get("player-profile", player.getName()));
         ItemStackUtil.setLore(PLAYER_PROFILE,
                 I18nUtil.get("forceload-chunks",
                     PlayerChunkLimitManager.getPlayerChunksCurrent(player),
                     PlayerChunkLimitManager.getPlayerChunkLimit(player)));
         ItemStackUtil.setLore(BUY, I18nUtil.get("click-buy"));
-        ItemStackUtil.addLoreLines(BUY, I18nUtil.get("price", EconomyManager.getPriceType().getDisplayName(), EconomyManager.getPrice(), EconomyManager.getBuyTimeOnce()));
+        String price_name = I18nUtil.get("price", EconomyManager.getPriceType().getDisplayName(), EconomyManager.getPrice(), EconomyManager.getBuyTimeOnce());
+        if (EconomyManager.getPriceType() == PriceType.FREE){
+            price_name = I18nUtil.get("price-free", EconomyManager.getPriceType().getDisplayName(),EconomyManager.getBuyTimeOnce());
+        }
+        ItemStackUtil.addLoreLines(BUY, price_name);
         build();
         menu.setItem(4, new MenuItem(PLAYER_PROFILE, HotHandlers.voidHandler));
         menu.setItem(20, new MenuItem(BUY, buyHandler));
 
         player.openInventory(menu.getInventory());
     }
-    public void refresh(Player player) {
+    public void refresh(@NotNull Player player) {
         player.closeInventory();
         open(player);
     }

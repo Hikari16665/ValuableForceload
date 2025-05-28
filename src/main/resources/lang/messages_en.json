@@ -11,7 +11,7 @@
   "economy-name-playerpoints": "Points",
   "economy-name-xconomy": "Balance",
   "economy-name-exp-level": "EXP Level",
-  "prefix": "&c&l[VFL]&f ",
+  "prefix": "&c&l[VFL]&f",
   "main-menu": "&6&lMain Menu",
   "player-profile": "&e&lPlayer Profile: &c{0}",
   "forceload-chunks": "Forceload Chunks: {0}/{1}",
@@ -22,6 +22,7 @@
   "look": "&e&lLook",
   "click-look": "Click to look and manage your forceload chunks.",
   "price": "Price: {0}x{1} / {2} days",
+  "price-free": "Price: {0} / {1} days",
   "cannot-buy-no-money": "&cUnable to buy: Not enough money",
   "cannot-buy-limit-reached": "&cUnable to buy: Limit exceeded",
   "buy-successful": "&a&lBuy successful!",
@@ -39,5 +40,6 @@
   "last-page": "&6&lLast Page",
   "author-list": "&b&lDeveloper:",
   "author": "&eEventually",
-  "config-reloaded": "Config reloaded!"
+  "config-reloaded": "Config reloaded!",
+  "free": "&a&lFree"
 }

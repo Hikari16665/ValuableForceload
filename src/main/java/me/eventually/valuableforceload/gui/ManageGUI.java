@@ -61,11 +61,13 @@ public class ManageGUI extends AbstractGUI {
         open(player, true);
     }
     public void open(Player player, boolean message) {
+        //setup player profile display item
         ItemStackUtil.rename(PLAYER_PROFILE, I18nUtil.get("player-profile", player.getName()));
         ItemStackUtil.setLore(PLAYER_PROFILE,
                 I18nUtil.get("forceload-chunks",
                         PlayerChunkLimitManager.getPlayerChunksCurrent(player),
                         PlayerChunkLimitManager.getPlayerChunkLimit(player)));
+        //chunk data
         List<ForceloadChunkData> chunks = ForceloadChunkManager.getForceloadChunkData(player);
         if (chunks.isEmpty()){
             if (message) {
@@ -73,18 +75,22 @@ public class ManageGUI extends AbstractGUI {
             }
             return;
         }
+        //build menu
         build();
         int chunksize = 10;
         List<List<ForceloadChunkData>> pages = new ArrayList<>();
+        //create pages
         for (int i = 0; i< chunks.size(); i += chunksize){
             int end = Math.min(i + chunksize, chunks.size());
             pages.add(chunks.subList(i, end));
         }
         List<ForceloadChunkData> pageChunks = pages.get(page - 1);
         for (int i = 0; i < pageChunks.size(); i++) {
+            //display every chunk
             ForceloadChunkData chunk = pageChunks.get(i);
             World world = Bukkit.getServer().getWorld(chunk.getWorld());
-
+            
+            //info show item
             ItemStack infoShowItem = ItemStackUtil.getItemStack(LocationUtil.getWorldDisplayMaterial(world), 1, I18nUtil.get(
                     "chunk",
                     chunk.getWorld(),
@@ -97,6 +103,8 @@ public class ManageGUI extends AbstractGUI {
             Instant instant = Instant.ofEpochSecond(chunk.getExpireTimestamp());
             ItemStackUtil.addLoreLines(infoShowItem, I18nUtil.get("expire-date", formatter.format(instant)));
             ItemStackUtil.addLoreLines(infoShowItem, I18nUtil.get("click-delete"));
+
+            //Menu item with delete handler
             MenuItem item = new MenuItem(infoShowItem, (event, slot, menu) ->{
                 event.setCancelled(true);
                 boolean removed = ForceloadChunkManager.removeForceloadChunk(chunk.getUniqueId());
@@ -107,8 +115,13 @@ public class ManageGUI extends AbstractGUI {
                     MessageUtil.sendMessage(player, I18nUtil.get("remove-forceload-chunk-failed"));
                 }
             });
+            //add item to menu
             menu.setItem(resultMap.get(i + 1), item);
+
+            //player profile
             menu.setItem(4, new MenuItem(PLAYER_PROFILE, HotHandlers.voidHandler));
+
+            //page control buttons
             if (page > 1) {
                 menu.setItem(47, new MenuItem(LAST_PAGE, (event, slot, menu) -> {
                     event.setCancelled(true);
@@ -123,6 +136,8 @@ public class ManageGUI extends AbstractGUI {
                     refresh(player);
                 }));
             }
+
+            //open menu
             player.openInventory(menu.getInventory());
         }
     }

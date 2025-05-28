@@ -12,8 +12,8 @@ public class LocationUtil {
     public static Chunk getChunk(Location location) {
         World world = location.getWorld();
         int x = location.getBlockX();
-        int y = location.getBlockY();
-        return ValuableForceload.getInstance().getServer().getWorld(world.getUID()).getChunkAt(x >> 4, y >> 4);
+        int z = location.getBlockZ();
+        return ValuableForceload.getInstance().getServer().getWorld(world.getUID()).getChunkAt(x >> 4, z >> 4);
     }
     public static Map<String, Object> mapChunk(Chunk chunk) {
         return Map.of(
@@ -27,15 +27,11 @@ public class LocationUtil {
     }
     public static Material getWorldDisplayMaterial(World world){
         if (world == null) return Material.BARRIER;
-        switch (world.getEnvironment()){
-            case NORMAL:
-                return Material.GRASS_BLOCK;
-            case NETHER:
-                return Material.NETHERRACK;
-            case THE_END:
-                return Material.END_STONE;
-            default:
-                return Material.COMMAND_BLOCK;
-        }
+        return switch (world.getEnvironment()) {
+            case NORMAL -> Material.GRASS_BLOCK;
+            case NETHER -> Material.NETHERRACK;
+            case THE_END -> Material.END_STONE;
+            default -> Material.COMMAND_BLOCK;
+        };
     }
 }
