@@ -1,11 +1,14 @@
 package me.eventually.valuableforceload.structure;
 
+import io.papermc.paper.threadedregions.scheduler.RegionScheduler;
 import me.eventually.valuableforceload.ValuableForceload;
+import me.eventually.valuableforceload.alternatives.ChunkForceload;
 import me.eventually.valuableforceload.manager.PlayerChunkLimitManager;
 import me.eventually.valuableforceload.utils.LocationUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Server;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
@@ -87,7 +90,15 @@ public class ForceloadChunk {
     }
 
     public void updateForceLoadStatus() {
-        this.chunk.setForceLoaded(!this.isExpired());
+//        if (ValuableForceload.getInstance().isFolia) {
+//            RegionScheduler scheduler = Bukkit.getRegionScheduler();
+//            scheduler.execute(ValuableForceload.getInstance(), this.chunk.getWorld(), this.chunk.getX(), this.chunk.getZ(), () -> {
+//                this.chunk.setForceLoaded(!this.isExpired());
+//            });
+//        } else {
+//            this.chunk.setForceLoaded(!this.isExpired());
+//        }
+        ChunkForceload.setChunkForceload(this.chunk, !this.isExpired());
     }
 
     public Map<String, Object> toMap() {

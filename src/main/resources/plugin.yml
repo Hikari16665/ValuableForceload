@@ -1,5 +1,5 @@
 name: ValuableForceload
-version: '1.0.4f3'
+version: '1.0.4f4'
 main: me.eventually.valuableforceload.ValuableForceload
 api-version: '1.13'
 load: POSTWORLD

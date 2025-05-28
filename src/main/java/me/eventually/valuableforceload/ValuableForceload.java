@@ -1,5 +1,6 @@
 package me.eventually.valuableforceload;
 
+import io.papermc.paper.threadedregions.scheduler.GlobalRegionScheduler;
 import me.eventually.valuableforceload.commands.MainCommand;
 import me.eventually.valuableforceload.economy.EconomyPlayerPoints;
 import me.eventually.valuableforceload.economy.EconomyVault;
@@ -65,11 +66,21 @@ public final class ValuableForceload extends JavaPlugin {
     public static Price price;
     public static Price getPrice() { return price; }
 
+    public boolean isFolia;
+
 
     @Override
     public void onEnable() {
         // Plugin startup logic
         instance = this;
+
+        try {
+            Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
+            getLogger().info("Found Folia classes.");
+            isFolia = true;
+        } catch (ClassNotFoundException e) {
+            isFolia = false;
+        }
 
         loadConfig();
 
@@ -92,13 +103,26 @@ public final class ValuableForceload extends JavaPlugin {
 
         // bukkit scheduler, run every 300s (5minute)
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
+
+
+        if (isFolia) {
+            getLogger().info("Folia detected, using Folia scheduler.");
+            GlobalRegionScheduler scheduler = getServer().getGlobalRegionScheduler();
+            scheduler.runDelayed(this, (task) -> {
                 ForceloadChunkManager.updateChunkForceloadStatus();
                 ForceloadChunkManager.cleanUpExpiredForceloads();
-            }
-        }.runTaskTimer(this, 0L, 300 * 20L);
+            }, 300 * 20L);
+        } else {
+            getLogger().info("Paper detected, using Bukkit scheduler.");
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    ForceloadChunkManager.updateChunkForceloadStatus();
+                    ForceloadChunkManager.cleanUpExpiredForceloads();
+                }
+            }.runTaskTimer(this, 0L, 300 * 20L);
+        }
+
 
 
         // Economy plugin setup

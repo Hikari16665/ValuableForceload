@@ -1,5 +1,6 @@
 package me.eventually.valuableforceload.manager;
 
+import me.eventually.valuableforceload.alternatives.ChunkForceload;
 import me.eventually.valuableforceload.structure.ForceloadChunk;
 import me.eventually.valuableforceload.structure.ForceloadChunkData;
 import org.bukkit.Chunk;
@@ -41,11 +42,10 @@ public class ForceloadChunkManager {
         for (ForceloadChunk forceloadChunk : forceloadChunks) {
             if (forceloadChunk.isExpired()) {
                 toRemove.add(forceloadChunk);
-
             }
         }
         for (ForceloadChunk forceloadChunk : toRemove) {
-            forceloadChunk.getChunk().setForceLoaded(false);
+            ChunkForceload.setChunkForceload(forceloadChunk.getChunk(), false);
             forceloadChunks.remove(forceloadChunk);
         }
     }
@@ -55,7 +55,7 @@ public class ForceloadChunkManager {
             return;
         }
         for (ForceloadChunk forceloadChunk : forceloadChunks) {
-            forceloadChunk.getChunk().setForceLoaded(false);
+            ChunkForceload.setChunkForceload(forceloadChunk.getChunk(), false);
         }
     }
 
@@ -97,7 +97,7 @@ public class ForceloadChunkManager {
         boolean removed = false;
         for (ForceloadChunk forceloadChunk : forceloadChunks) {
             if (forceloadChunk.getUniqueId().equals(uniqueId)) {
-                forceloadChunk.getChunk().setForceLoaded(false);
+                ChunkForceload.setChunkForceload(forceloadChunk.getChunk(), false);
                 forceloadChunks.remove(forceloadChunk);
                 updateChunkForceloadStatus();
                 removed = true;
