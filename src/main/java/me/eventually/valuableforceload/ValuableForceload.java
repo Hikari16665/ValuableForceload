@@ -217,24 +217,24 @@ public final class ValuableForceload extends JavaPlugin {
         }
         config = getConfig();
         // Default configs
-        config.addDefault("locale", "en");
-        config.addDefault("max-forceload-chunks-per-player", 3);
+        config.addDefault("locale", "zh_CN");
+        config.addDefault("max-forceload-chunks-per-player", 10);
         config.addDefault("menu-item.main-background", "BLACK_STAINED_GLASS_PANE");
-        config.addDefault("menu-item.manage-background", "PINK_STAINED_GLASS_PANE");
+        config.addDefault("menu-item.manage-background", "BLACK_STAINED_GLASS_PANE");
         config.addDefault("menu-item.buy", "BEACON");
         config.addDefault("menu-item.manage", "COMPASS");
-        config.addDefault("forceload-chunk-price.economy-type", "PLUGIN_PLAYERPOINTS");
-        config.addDefault("forceload-chunk-price.value", 200);
-        config.addDefault("forceload-chunk-price.days", 3);
+        config.addDefault("forceload-chunk-price.economy-type", "PLUGIN_VAULT");
+        config.addDefault("forceload-chunk-price.value", 2000);
+        config.addDefault("forceload-chunk-price.days", 20);
         config.addDefault("forceload-chunk-data", List.of());
         config.addDefault("max-forceload-chunks-permission-override", List.of(
                 Map.of(
                         "permission", "valuableforceload.example.permission-override",
-                        "limit", 4
+                        "limit", 1145
                 ),
                 Map.of(
                         "permission", "valuableforceload.example.permission-override-2",
-                        "limit", 5
+                        "limit", 999
                 )
         ));
         loadBasicConfig();

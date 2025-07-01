@@ -1,5 +1,5 @@
 name: ValuableForceload
-version: '1.0.4f4'
+version: '1.0.4f4-beacon'
 main: me.eventually.valuableforceload.ValuableForceload
 api-version: '1.13'
 load: POSTWORLD

@@ -33,28 +33,26 @@ public class MainGUI extends AbstractGUI {
 
     private final ItemStack BACKGROUND = ItemStackUtil.getItemStack(BACKGROUND_MATERIAL, 1, " ", " ");
     private ItemStack PLAYER_PROFILE = ItemStackUtil.getItemStack(Material.ACACIA_SIGN, 1, I18nUtil.get("player-profile", ""), " ");
-    private final ItemStack QUIT = ItemStackUtil.getItemStack(Material.ARROW, 1, I18nUtil.get("quit"), I18nUtil.get("click-quit"));
+    private final ItemStack QUIT = ItemStackUtil.getItemStack(Material.RED_STAINED_GLASS_PANE, 1, I18nUtil.get("quit"), "", I18nUtil.get("click-quit"));
     private final ItemStack BUY = ItemStackUtil.getItemStack(BUY_MATERIAL, 1, I18nUtil.get("buy"), I18nUtil.get("click-buy"));
-    private final ItemStack LOOK = ItemStackUtil.getItemStack(LOOK_MATERIAL, 1, I18nUtil.get("look"), I18nUtil.get("click-look"));
+    private final ItemStack LOOK = ItemStackUtil.getItemStack(LOOK_MATERIAL, 1, I18nUtil.get("look"), "", I18nUtil.get("click-look"), "&7可以查看到期时间等", "", "&e点击打开!");
     private final ItemStack AUTHOR = ItemStackUtil.getItemStack(Material.BOOK, 1, I18nUtil.get("author-list"), I18nUtil.get("author"));
     private final MatrixDrawer drawer = new MatrixDrawer(45)
             .addLine("AOOOFOOOO")
-            .addLine("O.......O")
-            .addLine("O.C...L.O")
-            .addLine("O.......O")
+            .addLine(".........")
+            .addLine("...C.L...")
+            .addLine(".........")
+            .addLine(".........")
             .addLine("OOOOQOOOO")
             .addExplain('O', BACKGROUND, HotHandlers.voidHandler)
             .addExplain('Q', QUIT, HotHandlers.closeHandler)
             .addExplain('F', PLAYER_PROFILE, HotHandlers.voidHandler)
             .addExplain('C', BUY, HotHandlers.voidHandler)
             .addExplain('A', AUTHOR, HotHandlers.voidHandler)
-            .addExplain('L', LOOK, new MenuClickHandler() {
-                @Override
-                public void onClick(InventoryClickEvent event, int slot, Menu menu) {
-                    event.setCancelled(true);
-                    ManageGUI gui = new ManageGUI();
-                    gui.open((Player) event.getWhoClicked());
-                }
+            .addExplain('L', LOOK, (event, slot, menu) -> {
+                event.setCancelled(true);
+                ManageGUI gui = new ManageGUI();
+                gui.open((Player) event.getWhoClicked());
             });
 
     private static Menu menu;
@@ -66,15 +64,16 @@ public class MainGUI extends AbstractGUI {
                 I18nUtil.get("forceload-chunks",
                     PlayerChunkLimitManager.getPlayerChunksCurrent(player),
                     PlayerChunkLimitManager.getPlayerChunkLimit(player)));
-        ItemStackUtil.setLore(BUY, I18nUtil.get("click-buy"));
+        ItemStackUtil.setLore(BUY, "", I18nUtil.get("click-buy"), "&7让区块处于无人但加载状态");
         String price_name = I18nUtil.get("price", EconomyManager.getPriceType().getDisplayName(), EconomyManager.getPrice(), EconomyManager.getBuyTimeOnce());
         if (EconomyManager.getPriceType() == PriceType.FREE){
             price_name = I18nUtil.get("price-free", EconomyManager.getPriceType().getDisplayName(),EconomyManager.getBuyTimeOnce());
         }
-        ItemStackUtil.addLoreLines(BUY, price_name);
+//        ItemStackUtil.addLoreLines(BUY, price_name);
+        ItemStackUtil.addLoreLines(BUY, "", "&7期限:&b 20 天", "&7花费: &62000 大陆币", "", "&e点击购买!");
         build();
         menu.setItem(4, new MenuItem(PLAYER_PROFILE, HotHandlers.voidHandler));
-        menu.setItem(20, new MenuItem(BUY, buyHandler));
+        menu.setItem(21, new MenuItem(BUY, buyHandler));
 
         player.openInventory(menu.getInventory());
     }
@@ -85,7 +84,7 @@ public class MainGUI extends AbstractGUI {
     @Override
     public void build() {
         menu = Menu.builder()
-                .rows(5)
+                .rows(6)
                 .drawer(drawer)
                 .title(I18nUtil.getWithPrefix("main-menu"))
                 .build();

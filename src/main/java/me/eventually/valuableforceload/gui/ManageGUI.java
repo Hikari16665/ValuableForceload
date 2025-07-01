@@ -21,36 +21,58 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ManageGUI extends AbstractGUI {
 
-    public static Material BACKGROUND_MATERIAL = Material.PINK_STAINED_GLASS_PANE;
+    public static Material BACKGROUND_MATERIAL = Material.BLACK_STAINED_GLASS_PANE;
 
     private final ItemStack BACKGROUND = ItemStackUtil.getItemStack(BACKGROUND_MATERIAL, 1, " ", " ");
     private ItemStack PLAYER_PROFILE = ItemStackUtil.getItemStack(Material.ACACIA_SIGN, 1, I18nUtil.get("player-profile", ""), " ");
-    private final ItemStack BACK = ItemStackUtil.getItemStack(Material.OAK_DOOR, 1, I18nUtil.get("back"), I18nUtil.get("click-quit"));
+    private final ItemStack BACK = ItemStackUtil.getItemStack(Material.WHITE_STAINED_GLASS_PANE, 1, I18nUtil.get("back"), "", I18nUtil.get("click-back"));
     private final ItemStack NEXT_PAGE = ItemStackUtil.getItemStack(Material.ARROW, 1, I18nUtil.get("next-page"), "");
     private final ItemStack LAST_PAGE = ItemStackUtil.getItemStack(Material.ARROW, 1, I18nUtil.get("last-page"), "");
-    private static final Map<Integer, Integer> resultMap = Map.of(
-            1, 20,
-            2, 21,
-            3, 22,
-            4, 23,
-            5, 24,
-            6, 29,
-            7, 30,
-            8, 31,
-            9, 32,
-            10, 33
-    );
+    private static final Map<Integer, Integer> resultMap = new HashMap<>();
+
+    static {
+        resultMap.put(1, 10);
+        resultMap.put(2, 11);
+        resultMap.put(3, 12);
+        resultMap.put(4, 13);
+        resultMap.put(5, 14);
+        resultMap.put(6, 15);
+        resultMap.put(7, 16);
+        resultMap.put(8, 19);
+        resultMap.put(9, 20);
+        resultMap.put(10, 21);
+        resultMap.put(11, 22);
+        resultMap.put(12, 23);
+        resultMap.put(13, 24);
+        resultMap.put(14, 25);
+        resultMap.put(15, 28);
+        resultMap.put(16, 29);
+        resultMap.put(17, 30);
+        resultMap.put(18, 31);
+        resultMap.put(19, 32);
+        resultMap.put(20, 33);
+        resultMap.put(21, 34);
+        resultMap.put(22, 37);
+        resultMap.put(23, 38);
+        resultMap.put(24, 39);
+        resultMap.put(25, 40);
+        resultMap.put(26, 41);
+        resultMap.put(27, 42);
+        resultMap.put(28, 43);
+    }
+
     private MatrixDrawer drawer = new MatrixDrawer(54)
             .addLine("OOOOFOOOO")
-            .addLine("O       O")
-            .addLine("O       O")
-            .addLine("O       O")
-            .addLine("O       O")
+            .addLine("         ")
+            .addLine("         ")
+            .addLine("         ")
+            .addLine("         ")
             .addLine("OOOOBOOOO")
             .addExplain('O', BACKGROUND, HotHandlers.voidHandler)
             .addExplain('B', BACK, HotHandlers.mainMenuHandler);
@@ -77,7 +99,7 @@ public class ManageGUI extends AbstractGUI {
         }
         //build menu
         build();
-        int chunksize = 10;
+        int chunksize = 28;
         List<List<ForceloadChunkData>> pages = new ArrayList<>();
         //create pages
         for (int i = 0; i< chunks.size(); i += chunksize){
@@ -102,7 +124,8 @@ public class ManageGUI extends AbstractGUI {
                     .withZone(ZoneId.systemDefault());
             Instant instant = Instant.ofEpochSecond(chunk.getExpireTimestamp());
             ItemStackUtil.addLoreLines(infoShowItem, I18nUtil.get("expire-date", formatter.format(instant)));
-            ItemStackUtil.addLoreLines(infoShowItem, I18nUtil.get("click-delete"));
+            ItemStackUtil.addLoreLines(infoShowItem, "", I18nUtil.get("click-delete"));
+            ItemStackUtil.addLoreLines(infoShowItem, "", "&e点击删除!");
 
             //Menu item with delete handler
             MenuItem item = new MenuItem(infoShowItem, (event, slot, menu) ->{
