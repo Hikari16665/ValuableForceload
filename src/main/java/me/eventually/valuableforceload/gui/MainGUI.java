@@ -70,7 +70,7 @@ public class MainGUI extends AbstractGUI {
             price_name = I18nUtil.get("price-free", EconomyManager.getPriceType().getDisplayName(),EconomyManager.getBuyTimeOnce());
         }
 //        ItemStackUtil.addLoreLines(BUY, price_name);
-        ItemStackUtil.addLoreLines(BUY, "", "&7期限:&b 20 天", "&7花费: &62000 大陆币", "", "&e点击购买!");
+        ItemStackUtil.addLoreLines(BUY, "", "&7期限:&b 20 天", "&7花费: &620000 大陆币", "", "&e点击购买!");
         build();
         menu.setItem(4, new MenuItem(PLAYER_PROFILE, HotHandlers.voidHandler));
         menu.setItem(21, new MenuItem(BUY, buyHandler));
