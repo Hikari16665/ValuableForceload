@@ -6,10 +6,6 @@ steps:
   - name: build
     image: maven:3-amazoncorretto-21
     commands:
-      - mvn clean package -e
-  - name: archive-jar
-    image: plugins/artifacts
-    settings:
-      target: artifacts/
-      patterns:
-        - target/*.jar
+      - mvn clean package
+    artifacts:
+    - target/*.jar
